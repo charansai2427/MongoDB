@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const {addCourse,getAllCourses} = require("../controllers/courseController");
+const {addCourse,getAllCourses,getCourseById} = require("../controllers/courseController");
 const courseRouter = Router();
 
 courseRouter.post("/add", async(req,res) => {
@@ -22,4 +22,14 @@ courseRouter.get("/all", async(req,res) => {
     }
 })
 
-module.exports = courseRouter;
+courseRouter.get("/course", async(req,res) => {
+    try {
+        if(!req.isAuth) throw new Error("Unauthenticated");
+        const data = await getCourseById(req);
+        res.send(data);
+    } catch (error) {
+        res.send({err: error.message})
+    }
+})
+
+module.exports = courseRouter

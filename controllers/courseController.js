@@ -12,5 +12,16 @@ const getAllCourses = (req) => {
     .sort("title","asc");
 };
 
+ const getCourseById = async (req)=>{
+  const courseId= new mongoDB.ObjectId(req.body.courseId);
+  const courseData = await Courses.findOne({_id:courseId});
+  const {curriculum} = courseData;
+  const currPromise = curriculum.map(e=>{
+    const topicId = new mongoDB.ObjectId(e);
+    return Topics.findOne({_id:topicId})
+  })
+  return Promise.allSettled(currPromise);
+}
 
-module.exports = { addCourse, getAllCourses };
+
+module.exports = { addCourse, getAllCourses,getCourseById };
